@@ -55,7 +55,7 @@ public class Commands {
 		}
 	}
 	
-	public static void clockupdate() {
+	public static void clockUpdate() {
 		
 		World world = Config.world();
 		
@@ -96,5 +96,20 @@ public class Commands {
 			removeDigit(world, Config.position(Config.POS_SECONDS, Config.POS_SECOND), (int)(_old[1] - '0'));
 			placeDigit(world, Config.position(Config.POS_SECONDS, Config.POS_SECOND), (int)(_newone[1] - '0'));
 		}
+	}
+	
+	public static void clockInfo(Player sender) {
+		
+		
+	}
+	
+	public static void clockStart(Player sender) {
+		
+		
+	}
+	
+	public static void clockStop(Player sender) {
+		
+		
 	}
 }

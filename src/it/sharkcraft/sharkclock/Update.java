@@ -27,7 +27,7 @@ public class Update implements Runnable {
 		
 		if (running) {
 		
-			Commands.clockupdate();
+			Commands.clockUpdate();
 		}
 		
 		iter++;

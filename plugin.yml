@@ -7,5 +7,22 @@ commands:
         description: View time
     shdate:
         description: View date
-    timeupdate:
-        description: Reload time and date
+    clock:
+        aliases: [clock info]
+        usage: |
+            Use /help clock [subcommand] for more information
+            /clock info - Show clock information
+            /clock start - Start clock
+            /clock stop - Stop clock
+            /clock update - Update clock when stopped
+        description: Alias to clock status
+    clock info:
+        aliases: [clock]
+        description: Show clock information
+    clock start:
+        description: Start clock
+    clock stop:
+        description: Stop clock
+    clock update:
+        description: Update clock when stopped
+

@@ -20,6 +20,8 @@ public class SharkClock extends JavaPlugin {
 		
 		@SuppressWarnings("unused")
 		Update up = new Update();
+		
+		Update.running = true;	// Make the clock work
 	}
 	
 	@Override
@@ -31,6 +33,12 @@ public class SharkClock extends JavaPlugin {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 		
+		if (!(sender instanceof Player)) {
+			
+			sender.sendMessage("You are not a Player!!");
+			return true;
+		}
+		
 		Player p = (Player) sender;
         
 		if (cmd.getName().equalsIgnoreCase("shtime")){
@@ -41,9 +49,31 @@ public class SharkClock extends JavaPlugin {
         	
         	Commands.shdate(p);
         	
-        } else if (cmd.getName().equalsIgnoreCase("timeupdate")){
+        } else if (cmd.getName().equalsIgnoreCase("clock")) {
         	
-        	Commands.clockupdate();
+        	if (args.length == 0) {
+        		
+        		Commands.clockInfo(p);
+        		return false;
+        	}
+        	
+        	if (args[0].equalsIgnoreCase("info")) {
+        		
+        		Commands.clockInfo(p);
+        		
+        	} else if (args[0].equalsIgnoreCase("update")) {
+        		
+        		Commands.clockUpdate();
+        		
+        	} else if (args[0].equalsIgnoreCase("start")) {
+        		
+        		Commands.clockStart(p);
+        		
+        	} else if (args[0].equalsIgnoreCase("stop")) {
+        		
+        		Commands.clockStop(p);
+        		
+        	}
         }
         
 		return false;
