@@ -1,5 +1,6 @@
 package it.sharkcraft.sharkclock;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -22,6 +23,8 @@ public class SharkClock extends JavaPlugin {
 		Update up = new Update();
 		
 		Update.running = true;	// Make the clock work
+		
+		Bukkit.getServer().getPluginManager().registerEvents(new TouchListener(), this);
 	}
 	
 	@Override

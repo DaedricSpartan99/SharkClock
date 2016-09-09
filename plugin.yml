@@ -25,4 +25,20 @@ commands:
         description: Stop clock
     clock update:
         description: Update clock when stopped
+    clock set:
+        description: Set an existing block
+        usage: Syntax |
+                   /clock set <digit> <indexnumber>
+               then touch the block
+               warning - <indexnumber> starts by 0
+   clock add:
+        description: Register a new block
+        usage: Syntax |
+                   /clock add <digit>
+               then touch the block
+   clock remove:
+        description: Remove an existing block
+        usage: Syntax |
+                   /clock remove <digit> <indexnumber>
+               warning - <indexnumber> starts by 0
 

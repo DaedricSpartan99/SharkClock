@@ -106,4 +106,75 @@ public class Commands {
 		Update.running = false;
 		sender.sendMessage("§8[§c§l!§8] §9SharkClock> " + Config.stopMessage());
 	}
+	
+	public static void clockAdd(Player sender, int digit) {
+		
+		if (TouchListener.active) {
+			
+			sender.sendMessage("§8[§c§l!§8] §9SharkClock> An event is already active, right click to a block to finish it");
+			return;
+		}
+		
+		if (digit < 0 || digit > 9) {
+			
+			sender.sendMessage("§8[§c§l!§8] §9SharkClock> Digit argument to high or too low, 0 - 9 permitted");
+			return;
+		}
+		
+		TouchListener.digit = digit;
+		
+		TouchListener.index = Config.sizeofDigit(digit);
+		
+		TouchListener.signal = TouchListener.SIGNAL_BLOCK;
+		TouchListener.active = true;
+	}
+	
+	public static void clockSet(Player sender, int digit, int index) {
+		
+		if (TouchListener.active) {
+			
+			sender.sendMessage("§8[§c§l!§8] §9SharkClock> An event is already active, right click to a block to finish it");
+			return;
+		}
+		
+		if (digit < 0 || digit > 9) {
+			
+			sender.sendMessage("§8[§c§l!§8] §9SharkClock> Digit argument to high or too low, 0 - 9 permitted");
+			return;
+		}
+		
+		TouchListener.digit = digit;
+		
+		if (index >= Config.sizeofDigit(digit)) {
+			
+			sender.sendMessage("§8[§c§l!§8] §9SharkClock> Index argument must exist");
+			return;
+		}
+		
+		TouchListener.index = index;
+		
+		TouchListener.signal = TouchListener.SIGNAL_BLOCK;
+		TouchListener.active = true;
+	}
+	
+	public static void clockRemove(Player sender, int digit, int index) {
+		
+		if (TouchListener.active) {
+			
+			sender.sendMessage("§8[§c§l!§8] §9SharkClock> An event is already active, right click to a block to finish it");
+			return;
+		}
+		
+		if (digit < 0 || digit > 9) {
+			
+			sender.sendMessage("§8[§c§l!§8] §9SharkClock> Digit argument to high or too low, 0 - 9 permitted");
+			return;
+		}
+		
+		if (index >= Config.sizeofDigit(digit)) {
+			
+			sender.sendMessage("§8[§c§l!§8] §9SharkClock> Index argument must exist");
+			return;
+		}
+	}
 }
