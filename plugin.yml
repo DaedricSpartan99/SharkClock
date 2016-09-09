@@ -1,0 +1,11 @@
+name: SharkClock
+version: 1.0
+Author: Numixe & GiantRaven
+main: it.sharkcraft.sharkclock.SharkClock
+commands:
+    shtime:
+        description: View time
+    shdate:
+        description: View date
+    timeupdate:
+        description: Reload time and date
