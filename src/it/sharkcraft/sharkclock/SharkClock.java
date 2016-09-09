@@ -72,7 +72,6 @@ public class SharkClock extends JavaPlugin {
         	} else if (args[0].equalsIgnoreCase("stop")) {
         		
         		Commands.clockStop(p);
-        		
         	}
         }
         

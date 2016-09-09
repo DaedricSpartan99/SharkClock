@@ -6,7 +6,7 @@ import static it.sharkcraft.sharkclock.SharkClock.*;
 public class Update implements Runnable {
 	
 	public static final int SEC = 20;
-	public static volatile boolean running = false;
+	public static volatile boolean running = false;	// !!! volatile makes it thread reachable !!!
 	int iter;
 	
 	public Update() {

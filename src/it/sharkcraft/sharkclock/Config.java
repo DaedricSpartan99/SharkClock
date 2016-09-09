@@ -3,14 +3,16 @@ package it.sharkcraft.sharkclock;
 import static it.sharkcraft.sharkclock.SharkClock.*;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.util.Vector;
 
 public class Config {
 
 	public static FileConfiguration config;
 	
-	private static Vector3i[][] BLOCKS;
+	private static Vector[][] BLOCKS;
 	
 	public final static String POS_HOURS = "Hours";
 	public final static String POS_MINUTES = "Minutes";
@@ -25,7 +27,10 @@ public class Config {
 		String[] position = {"Hours", "Minutes", "Seconds" };
 		String[] digits = {"First", "Second" };
 		String[][] messages = {{"Time", "Tempo attuale %hours% : %minutes% : %seconds%"},
-			{"Date", "Data attuale %day%.%month%.%year%"} };
+			{"Date", "Data attuale %day%.%month%.%year%"},
+			{"ClockInfo", "Ultimo aggiornamento: %hours% : %minutes% : %seconds%  running: %running%"},
+			{"ClockStart", "Orologio digitale inizializzato"}, 
+			{"ClockStop", "Orologo digitale interrotto"} };
 		
 		// create position section
 		
@@ -105,13 +110,13 @@ public class Config {
 		}
 	}
 	
-	public static Vector3i position(String pos, String digit) {
+	public static Location position(String pos, String digit) {
 		
 		int x = config.getInt("Position." + pos + "." + digit + ".x");
 		int y = config.getInt("Position." + pos + "." + digit + ".y");
 		int z = config.getInt("Position." + pos + "." + digit + ".z");
 		
-		return new Vector3i(x, y, z);
+		return new Location(world(), x, y, z);
 	}
 	
 	public static int sizeofNumber(int number) {
@@ -122,7 +127,7 @@ public class Config {
 		return config.getInt("Blocks." + number + ".size");
 	}
 	
-	public static Vector3i[] blocks(int number) {
+	public static Vector[] blocks(int number) {
 		
 		if (number < 0 || number > 9)
 			throw new IllegalArgumentException("From 0 to 9 permitted");
@@ -132,13 +137,13 @@ public class Config {
 	
 	public static void loadblocks() {
 		
-		BLOCKS = new Vector3i[10][];
+		BLOCKS = new Vector[10][];
 		
 		for (int number = 0; number < 10; number++) {
 		
 			int size = sizeofNumber(number);
 		
-			BLOCKS[number] = new Vector3i[size];
+			BLOCKS[number] = new Vector[size];
 		
 			for (int i = 0; i < size; i++) {
 			
@@ -146,7 +151,7 @@ public class Config {
 				int y = config.getInt("Blocks." + number + "." + i + ".y");
 				int z = config.getInt("Blocks." + number + "." + i + ".z");
 			
-				BLOCKS[number][i] = new Vector3i(x, y, z);
+				BLOCKS[number][i] = new Vector(x, y, z);
 			}
 		}
 	}
@@ -171,6 +176,21 @@ public class Config {
 		return config.getString("Messages.Date");
 	}
 	
+	public static String infoMessage() {
+		
+		return config.getString("Messages.ClockInfo");
+	}
+	
+	public static String startMessage() {
+		
+		return config.getString("Messages.ClockStart");
+	}
+	
+	public static String stopMessage() {
+		
+		return config.getString("Messages.ClockStop");
+	}
+	
 	public static void save() {
 		
 		plugin.saveConfig();
@@ -179,17 +199,5 @@ public class Config {
 	public static void reload() {
 		
 		plugin.reloadConfig();
-	}
-	
-	public static class Vector3i {
-		
-		public int x, y, z;
-		
-		public Vector3i(int x, int y, int z) {
-			
-			this.x = x;
-			this.y = y;
-			this.z = z;
-		}
 	}
 }
