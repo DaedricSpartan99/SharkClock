@@ -17,7 +17,7 @@ public class Commands {
 		String m = String.valueOf(Time.minutes());
 		String s = String.valueOf(Time.seconds());
 		
-		sender.sendMessage("§8[§c§l!§8] �9SharkClock> " + Config.timeMessage()
+		sender.sendMessage("§8[§c§l!§8] §9SharkClock> " + Config.timeMessage()
 				.replaceAll("%hours%", h).replaceAll("%minutes%", m)
 				.replaceAll("%seconds%", s));
 	}
