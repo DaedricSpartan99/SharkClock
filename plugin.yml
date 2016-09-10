@@ -16,15 +16,15 @@ commands:
             /clock stop - Stop clock
             /clock update - Update clock when stopped
         description: Alias to clock status
-    clock info:
-        aliases: [clock]
-        description: Show clock information
     clock start:
         description: Start clock
+        usage: /clock start
     clock stop:
         description: Stop clock
+        usage: /clock stop
     clock update:
         description: Update clock when stopped
+        usage: /clock update
     clock set:
         description: Set an existing block
         usage: Syntax |
@@ -38,7 +38,17 @@ commands:
                then touch the block
    clock remove:
         description: Remove an existing block
+        alias: [clock rm]
         usage: Syntax |
                    /clock remove <digit> <indexnumber>
                warning - <indexnumber> starts by 0
-
+   clock position:
+        description: Set the position of the digit with a relative type
+        alias: [clock pos]
+        usage: Syntax |
+                   /clock position <type> <digit>
+               <type> - = { hours, h }
+                        = { minutes, min }
+                        = { seconds, sec }
+               <digit> - = { first, f, 1 }
+                         = { second, s, 2 } 

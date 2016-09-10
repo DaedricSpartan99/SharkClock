@@ -16,6 +16,8 @@ public class TouchListener implements Listener {
 	public static int signal = SIGNAL_BLOCK;
 	public static int digit = 0;
 	public static int index = 0;
+	public static String pos_digit;
+	public static String pos_arg;
 	
 	@EventHandler
 	public void onPlayerInteract(PlayerInteractEvent event) {
@@ -40,6 +42,11 @@ public class TouchListener implements Listener {
 				break;
 				
 			case SIGNAL_POSITION:
+				
+				Config.setPosition(block.getLocation(), pos_arg, pos_digit);
+				player.sendMessage("§8[§c§l!§8] §9SharkClock> block set " + block.getLocation().getX() + " "
+						+ block.getLocation().getY() + " " + block.getLocation().getZ() + " as position for " + pos_arg + " argument "
+						+ pos_digit + " digit");
 				
 				break;
 				

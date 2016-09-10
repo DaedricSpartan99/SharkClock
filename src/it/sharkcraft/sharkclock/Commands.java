@@ -92,22 +92,36 @@ public class Commands {
 				replaceAll("%hours%", String.valueOf(Time.current.hour)).
 				replaceAll("%minutes%", String.valueOf(Time.current.min)).
 				replaceAll("%seconds%", String.valueOf(Time.current.sec)).
-				replaceAll("%running%", String.valueOf(Update.running)));
+				replaceAll("%running%", String.valueOf(Update.active)));
 	}
 	
 	public static void clockStart(Player sender) {
 		
-		Update.running = true;
+		Update.active = true;
+		Config.setActive(true);
 		sender.sendMessage("§8[§c§l!§8] §9SharkClock> " + Config.startMessage());
 	}
 	
 	public static void clockStop(Player sender) {
 		
-		Update.running = false;
+		Update.active = false;
+		Config.setActive(false);
 		sender.sendMessage("§8[§c§l!§8] §9SharkClock> " + Config.stopMessage());
 	}
 	
-	public static void clockAdd(Player sender, int digit) {
+	public static void clockAdd(Player sender, String _digit) {
+		
+		int digit;
+		
+		try {
+			
+			digit = Integer.parseInt(_digit);
+			
+		} catch (NumberFormatException e) {
+			
+			sender.sendMessage("§8[§c§l!§8] §9SharkClock> Digit must be a number");
+			return;
+		}
 		
 		if (TouchListener.active) {
 			
@@ -129,7 +143,20 @@ public class Commands {
 		TouchListener.active = true;
 	}
 	
-	public static void clockSet(Player sender, int digit, int index) {
+	public static void clockSet(Player sender, String _digit, String _index) {
+		
+		int digit, index;
+		
+		try {
+			
+			digit = Integer.parseInt(_digit);
+			index = Integer.parseInt(_index);
+			
+		} catch (NumberFormatException e) {
+			
+			sender.sendMessage("§8[§c§l!§8] §9SharkClock> Digit and index must be numbers");
+			return;
+		}
 		
 		if (TouchListener.active) {
 			
@@ -157,7 +184,58 @@ public class Commands {
 		TouchListener.active = true;
 	}
 	
-	public static void clockRemove(Player sender, int digit, int index) {
+	public static void clockPosition(Player sender, String pos, String digit) {
+		
+		if (pos.equalsIgnoreCase("hours") || pos.equalsIgnoreCase("h")) {
+			
+			TouchListener.pos_arg = Config.POS_HOURS;
+			
+		} else if (pos.equalsIgnoreCase("minutes") || pos.equalsIgnoreCase("min")) {
+			
+			TouchListener.pos_arg = Config.POS_MINUTES;
+			
+		} else if (pos.equalsIgnoreCase("seconds") || pos.equalsIgnoreCase("sec")) {
+			
+			TouchListener.pos_arg = Config.POS_SECONDS;
+			
+		} else {
+			
+			sender.sendMessage("§8[§c§l!§8] §9SharkClock> Wrong argument: first argument -> \"hours, minutes, seconds\" only permitted");
+			return;
+		}
+		
+		if (digit.equalsIgnoreCase("first") || digit.equalsIgnoreCase("f") || digit.equals("1")) {
+			
+			TouchListener.pos_digit = Config.POS_FIRST;
+			
+		} else if (digit.equalsIgnoreCase("second") || digit.equalsIgnoreCase("s") || digit.equals("2")) {
+			
+			TouchListener.pos_digit = Config.POS_SECOND;
+			
+		} else {
+			
+			sender.sendMessage("§8[§c§l!§8] §9SharkClock> Wrong argument: second argument -> \"first, second\" only permitted");
+			return;
+		}
+		
+		TouchListener.signal = TouchListener.SIGNAL_POSITION;
+		TouchListener.active = true;
+	}
+	
+	public static void clockRemove(Player sender, String _digit, String _index) {
+		
+		int digit, index;
+		
+		try {
+			
+			digit = Integer.parseInt(_digit);
+			index = Integer.parseInt(_index);
+			
+		} catch (NumberFormatException e) {
+			
+			sender.sendMessage("§8[§c§l!§8] §9SharkClock> Digit and index must be numbers");
+			return;
+		}
 		
 		if (TouchListener.active) {
 			

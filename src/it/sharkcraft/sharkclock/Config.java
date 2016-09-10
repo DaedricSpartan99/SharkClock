@@ -25,14 +25,21 @@ public class Config {
 	
 	public static void init() {
 		
-		String[] base = {"x", "y", "z"};
 		String[] position = {"Hours", "Minutes", "Seconds" };
 		String[] digits = {"First", "Second" };
 		String[][] messages = {{"Time", "Tempo attuale %hours% : %minutes% : %seconds%"},
 			{"Date", "Data attuale %day%.%month%.%year%"},
-			{"ClockInfo", "Ultimo aggiornamento: %hours% : %minutes% : %seconds%  running: %running%"},
+			{"ClockInfo", "Ultimo aggiornamento: %hours% : %minutes% : %seconds%  active: %running%"},
 			{"ClockStart", "Orologio digitale inizializzato"}, 
 			{"ClockStop", "Orologo digitale interrotto"} };
+		
+		// create active section
+		
+		if (!config.contains("Active")) {
+			
+			config.createSection("Active");
+			config.set("Active", false);
+		}
 		
 		// create position section
 		
@@ -54,14 +61,11 @@ public class Config {
 				
 				if (!config.contains("Position." + i + "." + w))
 					config.createSection("Position." + i + "." + w);
-			
-				for (String j : base) {
 				
-					if (!config.contains("Position." + i + "." + w + "." + j)) {
+				if (!config.contains("Position." + i + "." + w + ".Location")) {
 						
-						config.createSection("Position." + i + "." + w + "." + j);
-						config.set("Position." + i + "." + w + "." + j, 0);
-					}
+					config.createSection("Position." + i + "." + w + ".Location");
+					config.set("Position." + i + "." + w + ".Location", new Vector(0, 0, 0));
 				}
 			}
 		}
@@ -88,14 +92,11 @@ public class Config {
 				config.createSection("Blocks." + i + ".0.Material");
 				config.set("Blocks." + i + ".0.Material", Material.STONE);
 			}
-			
-			for (String j : base) {
 				
-				if (!config.contains("Blocks." + i + ".0." + j)) {
+			if (!config.contains("Blocks." + i + ".0.Location")) {
 					
-					config.createSection("Blocks." + i + ".0." + j);
-					config.set("Blocks." + i + ".0." + j, 0);
-				}
+				config.createSection("Blocks." + i + ".0.Location");
+				config.set("Blocks." + i + ".0.Location", new Vector(0, 0, 0));
 			}
 		}
 		
@@ -116,18 +117,14 @@ public class Config {
 	
 	public static Location position(String pos, String digit) {
 		
-		int x = config.getInt("Position." + pos + "." + digit + ".x");
-		int y = config.getInt("Position." + pos + "." + digit + ".y");
-		int z = config.getInt("Position." + pos + "." + digit + ".z");
+		Vector x = config.getVector("Position." + pos + "." + digit + ".Location");
 		
-		return new Location(world(), x, y, z);
+		return new Location(world(), x.getX(), x.getY(), x.getZ());
 	}
 	
 	public static void setPosition(Location loc, String pos, String digit) {
 		
-		config.set("Position." + pos + "." + digit + ".x", loc.getX());
-		config.set("Position." + pos + "." + digit + ".y", loc.getY());
-		config.set("Position." + pos + "." + digit + ".z", loc.getZ());
+		config.set("Position." + pos + "." + digit + ".Location", loc.toVector());
 	}
 	
 	public static int sizeofDigit(int number) {
@@ -164,11 +161,7 @@ public class Config {
 	
 		for (int i = 0; i < size; i++) {
 		
-			int x = config.getInt("Blocks." + digit + "." + i + ".x");
-			int y = config.getInt("Blocks." + digit + "." + i + ".y");
-			int z = config.getInt("Blocks." + digit + "." + i + ".z");
-		
-			BLOCKS[digit][i] = new Vector(x, y, z);
+			BLOCKS[digit][i] = config.getVector("Blocks." + digit + "." + i + ".Location");
 		}
 	}
 	
@@ -182,20 +175,16 @@ public class Config {
 		return Bukkit.getServer().getWorld(config.getString("Position.World"));
 	}
 	
-	public static void setBlock(Block block, int digit, int index) {	// reference of position hours first
+	public static void setBlock(Block block, int digit, int index) {	// !! reference of position hours first !!
 		
 		if (!config.contains("Blocks." + digit + "." + index)) {
 			
 			config.createSection("Blocks." + digit + "." + index);
-			config.createSection("Blocks." + digit + "." + index + ".x");
-			config.createSection("Blocks." + digit + "." + index + ".y");
-			config.createSection("Blocks." + digit + "." + index + ".z");
+			config.createSection("Blocks." + digit + "." + index + ".Location");
 			config.set("Blocks." + digit + ".Size", sizeofDigit(digit) + 1);
 		}
 		
-		config.set("Blocks." + digit + "." + index + ".x", block.getLocation().getX() - position(POS_HOURS, POS_FIRST).getX());
-		config.set("Blocks." + digit + "." + index + ".y", block.getLocation().getY() - position(POS_HOURS, POS_FIRST).getY());
-		config.set("Blocks." + digit + "." + index + ".z", block.getLocation().getZ() - position(POS_HOURS, POS_FIRST).getZ());
+		config.set("Blocks." + digit + "." + index + ".x", block.getLocation().toVector().subtract(position(POS_HOURS, POS_FIRST).toVector()));
 		
 		if (!config.contains("Blocks." + digit + "." + index + ".Material")) {
 			
@@ -208,6 +197,24 @@ public class Config {
 		Config.reload();
 	}
 	
+	private static void decreaseBlockIndex(int digit, int index) {
+		
+		if (config.contains("Blocks." + digit + "." + (index - 1)))
+			config.set("Blocks." + digit + "." + (index - 1), null);	// delete destination section
+		
+		Vector coords = config.getVector("Blocks." + digit + "." + index + ".Location");
+		String mat = config.getString("Blocks." + digit + "." + index + ".Material");
+		
+		config.set("Blocks." + digit + "." + index, null);
+		
+		config.createSection("Blocks." + digit + "." + (index - 1));
+		config.createSection("Blocks." + digit + "." + (index - 1) + ".Location");
+		config.createSection("Blocks." + digit + "." + (index - 1) + ".Material");
+		
+		config.set("Blocks." + digit + "." + (index - 1) + ".Location", coords);
+		config.set("Blocks." + digit + "." + (index - 1) + ".Material", mat);
+	}
+	
 	public static void removeBlock(int digit, int index) {
 		
 		if (!config.contains("Blocks." + digit + "." + index))
@@ -215,8 +222,23 @@ public class Config {
 		
 		config.set("Blocks." + digit + "." + index, null);
 		
-		// not finished
-		// rinomina delle sezioni
+		for (int i = index + 1; i < Config.sizeofDigit(digit); i++)
+			decreaseBlockIndex(digit, i);	// rename blocks
+		
+		config.set("Block." + digit + ".Size", sizeofDigit(digit) - 1);
+		
+		Config.save();
+		Config.reload();
+	}
+	
+	public static boolean active() {
+		
+		return config.getBoolean("Active");
+	}
+	
+	public static void setActive(boolean active) {
+		
+		config.set("Active", active);
 	}
 	
 	public static String timeMessage() {
