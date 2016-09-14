@@ -255,10 +255,15 @@ public class Config {
 		
 		BLOCKS[digit] = null;
 		
-		for (int i = 0; i < sizeofDigit(digit); i++) {
-			
-			plugin.getConfig().set("Block." + digit + "." + i, null);
-		}
+		plugin.getConfig().set("Blocks." + digit, null);
+		
+		if (!plugin.getConfig().contains("Blocks." + digit))
+			plugin.getConfig().createSection("Blocks." + digit);
+		
+		if (!plugin.getConfig().contains("Blocks." + digit + ".Size"))
+			plugin.getConfig().createSection("Blocks." + digit + ".Size");
+		
+		plugin.getConfig().set("Blocks." + digit + ".Size", 0);
 	}
 	
 	public static void setDigitByVolume(Block b1, Block b2, int digit) {
@@ -273,14 +278,14 @@ public class Config {
 		Location l1 = b1.getLocation();
 		Location l2 = b2.getLocation();
 		
-		setPosition(l1, POS_HOURS, POS_FIRST);
-		
 		int size = 0;
 		int[] inc = new int[3];
 		
 		inc[0] = (l2.getX() - l1.getX() < 0) ? -1 : 1;
 		inc[1] = (l2.getY() - l1.getY() < 0) ? -1 : 1;
 		inc[2] = (l2.getZ() - l1.getZ() < 0) ? -1 : 1;
+		
+		setPosition(l1.clone().add(new Vector(inc[0], inc[1], inc[2])), POS_HOURS, POS_FIRST);
 		
 		for (int i = (int)l1.getX() + inc[0]; i != (int)l2.getX(); i += inc[0]) {
 			
