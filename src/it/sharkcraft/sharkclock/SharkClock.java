@@ -10,11 +10,11 @@ public class SharkClock extends JavaPlugin {
 	
 	public static SharkClock plugin;
 
-	@Override
 	public void onEnable() {
 		
+		System.out.println("Starting SharkClock");
+		
 		SharkClock.plugin = this;
-		Config.config = getConfig();
 		
 		Config.init();
 		Config.loadblocks();
@@ -25,11 +25,14 @@ public class SharkClock extends JavaPlugin {
 		Bukkit.getServer().getPluginManager().registerEvents(new TouchListener(), this);
 		
 		Update.active = Config.active();
+		
+		Config.save();
+		Config.reload();
 	}
 	
-	@Override
 	public void onDisable() {
 		
+		System.out.println("Closing SharkClock");
 		Config.save();
 	}
 	
@@ -46,72 +49,115 @@ public class SharkClock extends JavaPlugin {
         
 		if (cmd.getName().equalsIgnoreCase("shtime")){
         	
-        	Commands.shtime(p);
+        	return Commands.shtime(p);
         	
         } else if (cmd.getName().equalsIgnoreCase("shdate")){
         	
-        	Commands.shdate(p);
+        	return Commands.shdate(p);
         	
         } else if (cmd.getName().equalsIgnoreCase("clock")) {
-        		
-        	Commands.clockInfo(p);
         	
-        } else if (args[0].equalsIgnoreCase("clock info")) {
-    		
-    		Commands.clockInfo(p);
-    		
-    	} else if (args[0].equalsIgnoreCase("clock update")) {
-    		
-    		Commands.clockUpdate();
-    		
-    	} else if (args[0].equalsIgnoreCase("clock start")) {
-    		
-    		Commands.clockStart(p);
-    		
-    	} else if (args[0].equalsIgnoreCase("clock stop")) {
-    		
-    		Commands.clockStop(p);
-    		
-    	} else if (args[0].equalsIgnoreCase("clock add")) {
-    		
-    		if (args.length < 1) {
-    			
-    			p.sendMessage("§8[§c§l!§8] §9SharkClock> Too few arguments " + cmd.getUsage());
-    			return false;
-    		}
-    		
-    		Commands.clockAdd(p, args[0]);
-    		
-    	} else if (args[0].equalsIgnoreCase("clock remove") || args[0].equalsIgnoreCase("clock rm")) {
-    		
-    		if (args.length < 2) {
-    			
-    			p.sendMessage("§8[§c§l!§8] §9SharkClock> Too few arguments " + cmd.getUsage());
-    			return false;
-    		}
-    		
-    		Commands.clockRemove(p, args[0], args[1]);
-    		
-    	} else if (args[0].equalsIgnoreCase("clock position") || args[0].equalsIgnoreCase("clock pos")) {
-    		
-    		if (args.length < 2) {
-    			
-    			p.sendMessage("§8[§c§l!§8] §9SharkClock> Too few arguments " + cmd.getUsage());
-    			return false;
-    		}
-    		
-    		Commands.clockPosition(p, args[0], args[1]);
-    		
-    	} else if (args[0].equalsIgnoreCase("clock set")) {
-    		
-    		if (args.length < 2) {
-    			
-    			p.sendMessage("§8[§c§l!§8] §9SharkClock> Too few arguments " + cmd.getUsage());
-    			return false;
-    		}
-    		
-    		Commands.clockSet(p, args[0], args[1]);
-    	}
+        	if (args.length == 0) {
+        		
+        		return Commands.clockInfo(p);
+        	}
+        	
+        	if (args[0].equalsIgnoreCase("info")) {
+        		
+        		return Commands.clockInfo(p);
+        		
+        	} else if (args[0].equalsIgnoreCase("update")) {
+        		
+        		return Commands.clockUpdate();
+        		
+        	} else if (args[0].equalsIgnoreCase("start")) {
+        		
+        		return Commands.clockStart(p);
+        		
+        	} else if (args[0].equalsIgnoreCase("stop")) {
+        		
+        		return Commands.clockStop(p);
+        		
+        	} else if (args[0].equalsIgnoreCase("add")) {
+        		
+        		if (args.length < 2) {
+        			
+        			p.sendMessage("§8[§c§l!§8] §9SharkClock> Too few arguments");
+        			return false;
+        		}
+        		
+        		return Commands.clockAdd(p, args[1]);
+        		
+        	} else if (args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("rm")) {
+        		
+        		if (args.length < 3) {
+        			
+        			p.sendMessage("§8[§c§l!§8] §9SharkClock> Too few arguments");
+        			return false;
+        		}
+        		
+        		return Commands.clockRemove(p, args[1], args[2]);
+        		
+        	} else if (args[0].equalsIgnoreCase("position") || args[0].equalsIgnoreCase("pos")) {
+        		
+        		if (args.length < 3) {
+        			
+        			p.sendMessage("§8[§c§l!§8] §9SharkClock> Too few arguments");
+        			return false;
+        		}
+        		
+        		return Commands.clockPosition(p, args[1], args[2]);
+        		
+        	} else if (args[0].equalsIgnoreCase("set")) {
+        		
+        		if (args.length < 3) {
+        			
+        			p.sendMessage("§8[§c§l!§8] §9SharkClock> Too few arguments");
+        			return false;
+        		}
+        		
+        		return Commands.clockSet(p, args[1], args[2]);
+        		
+        	} else if (args[0].equalsIgnoreCase("save")) {
+        		
+        		Config.init();
+        		Config.save();
+        		Config.reload();
+        		Config.loadblocks();
+        		return true;
+        		
+        	} else if (args[0].equalsIgnoreCase("shpos")) {
+        		
+        		if (args.length < 3) {
+        			
+        			p.sendMessage("§8[§c§l!§8] §9SharkClock> Too few arguments");
+        			return false;
+        		}
+        		
+        		return Commands.clockShPosition(p, args[1], args[2]);
+        		
+        	} else if (args[0].equalsIgnoreCase("shdigit")) {
+        		
+        		if (args.length < 2) {
+        			
+        			p.sendMessage("§8[§c§l!§8] §9SharkClock> Too few arguments");
+        			return false;
+        		}
+        		
+        		return Commands.clockShDigit(p, args[1]);
+        		
+        	} else if (args[0].equalsIgnoreCase("setvolume")) {
+        		
+        		if (args.length < 2) {
+        			
+        			p.sendMessage("§8[§c§l!§8] §9SharkClock> Too few arguments");
+        			return false;
+        		}
+        		
+        		return Commands.clockSetVolume(p, args[1]);
+        		
+        	}
+        }  
         
 		return false;
 	}

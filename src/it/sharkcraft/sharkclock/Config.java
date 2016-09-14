@@ -7,14 +7,13 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.util.Vector;
 
 public class Config {
 
-	public static FileConfiguration config;
+	//public static FileConfiguration config;
 	
-	private static Vector[][] BLOCKS;
+	private static Location[][] BLOCKS;
 	
 	public final static String POS_HOURS = "Hours";
 	public final static String POS_MINUTES = "Minutes";
@@ -35,96 +34,134 @@ public class Config {
 		
 		// create active section
 		
-		if (!config.contains("Active")) {
+		System.out.println("Checking for Active section");
+		
+		if (!plugin.getConfig().contains("Active")) {
 			
-			config.createSection("Active");
-			config.set("Active", false);
+			System.out.println("Creating section: " + "Active");
+			plugin.getConfig().createSection("Active");
+			plugin.getConfig().set("Active", false);
 		}
 		
 		// create position section
 		
-		if (!config.contains("Position"))
-			config.createSection("Position");
-		
-		if (!config.contains("Position.World")) {
+		if (!plugin.getConfig().contains("Position")) {
 			
-			config.createSection("Position.World");
+			System.out.println("Creating section: " + "Position");
+			plugin.getConfig().createSection("Position");
+		}
+		
+		if (!plugin.getConfig().contains("Position.World")) {
+			
+			System.out.println("Creating section: " + "Position.World");
+			plugin.getConfig().createSection("Position.World");
 			setWorld(Bukkit.getWorlds().get(0));	// get default world
 		}
 		
 		for (String i : position) {
 		
-			if (!config.contains("Position." + i))
-				config.createSection("Position." + i);
+			if (!plugin.getConfig().contains("Position." + i)) {
+				
+				System.out.println("Creating section: " + "Position." + i);
+				plugin.getConfig().createSection("Position." + i);
+			}
 				
 			for (String w : digits) {
 				
-				if (!config.contains("Position." + i + "." + w))
-					config.createSection("Position." + i + "." + w);
+				if (!plugin.getConfig().contains("Position." + i + "." + w)) {
+					
+					System.out.println("Creating section: " + "Position." + i + "." + w);
+					plugin.getConfig().createSection("Position." + i + "." + w);
+				}
 				
-				if (!config.contains("Position." + i + "." + w + ".Location")) {
-						
-					config.createSection("Position." + i + "." + w + ".Location");
-					config.set("Position." + i + "." + w + ".Location", new Vector(0, 0, 0));
+				if (!plugin.getConfig().contains("Position." + i + "." + w + ".Location")) {
+					
+					System.out.println("Creating section: " + "Position." + i + "." + w + ".Location");
+					plugin.getConfig().createSection("Position." + i + "." + w + ".Location");
+					plugin.getConfig().set("Position." + i + "." + w + ".Location", new Vector(0, 0, 0));
 				}
 			}
 		}
 		
 		// create section Blocks
 		
-		if (!config.contains("Blocks"))
-			config.createSection("Blocks");
+		if (!plugin.getConfig().contains("Blocks")) {
+			
+			System.out.println("Creating section: " + "Blocks");
+			plugin.getConfig().createSection("Blocks");
+		}
 		
 		for (int i = 0; i < 10; i++) {
 			
-			if (!config.contains("Blocks." + i))
-				config.createSection("Blocks." + i);
-			
-			if (!config.contains("Blocks." + i + ".Size")) {
+			if (!plugin.getConfig().contains("Blocks." + i)) {
 				
-				config.createSection("Blocks." + i + ".Size");
-				config.set("Blocks." + i + ".Size", 0);
+				System.out.println("Creating section: " + "Blocks." + i);
+				
+				plugin.getConfig().createSection("Blocks." + i);
 			}
 			
-			if (!config.contains("Blocks." + i + ".0")) {
+			if (!plugin.getConfig().contains("Blocks." + i + ".Size")) {
 				
-				config.createSection("Blocks." + i + ".0");
-				config.createSection("Blocks." + i + ".0.Material");
-				config.set("Blocks." + i + ".0.Material", Material.STONE);
+				System.out.println("Creating section: " + "Blocks." + i + ".Size");
+				
+				plugin.getConfig().createSection("Blocks." + i + ".Size");
+				plugin.getConfig().set("Blocks." + i + ".Size", 0);
+			}
+			
+			/*if (!plugin.getConfig().contains("Blocks." + i + ".0")) {
+				
+				System.out.println("Creating section: " + "Blocks." + i + ".0");
+				System.out.println("Creating section: " + "Blocks." + i + ".0.Material");
+				
+				plugin.getConfig().createSection("Blocks." + i + ".0");
+				plugin.getConfig().createSection("Blocks." + i + ".0.Material");
+				plugin.getConfig().set("Blocks." + i + ".0.Material", Material.STONE.toString());
 			}
 				
-			if (!config.contains("Blocks." + i + ".0.Location")) {
-					
-				config.createSection("Blocks." + i + ".0.Location");
-				config.set("Blocks." + i + ".0.Location", new Vector(0, 0, 0));
-			}
+			if (!plugin.getConfig().contains("Blocks." + i + ".0.Location")) {
+				
+				System.out.println("Creating section: " + "Blocks." + i + ".0.Location");
+				
+				plugin.getConfig().createSection("Blocks." + i + ".0.Location");
+				plugin.getConfig().set("Blocks." + i + ".0.Location", new Vector(0, 0, 0));
+				plugin.getConfig().set("Blocks." + i + ".Size", 1);
+			}*/
 		}
 		
 		// create section Messages
 		
-		if (!config.contains("Messages"))
-			config.createSection("Messages");
+		if (!plugin.getConfig().contains("Messages"))
+			plugin.getConfig().createSection("Messages");
 		
 		for (String[] i : messages) {
 		
-			if (!config.contains("Messages." + i[0])) {
+			if (!plugin.getConfig().contains("Messages." + i[0])) {
 			
-				config.createSection("Messages." + i[0]);
-				config.set("Messages." + i[0], i[1]);
+				plugin.getConfig().createSection("Messages." + i[0]);
+				plugin.getConfig().set("Messages." + i[0], i[1]);
 			}
 		}
 	}
 	
 	public static Location position(String pos, String digit) {
 		
-		Vector x = config.getVector("Position." + pos + "." + digit + ".Location");
+		Vector x = plugin.getConfig().getVector("Position." + pos + "." + digit + ".Location");
 		
 		return new Location(world(), x.getX(), x.getY(), x.getZ());
 	}
 	
 	public static void setPosition(Location loc, String pos, String digit) {
 		
-		config.set("Position." + pos + "." + digit + ".Location", loc.toVector());
+		Vector v = loc.toVector();
+		
+		System.out.println("Setting position: " + v.getX() + " " + v.getY() + " " + v.getZ());
+		System.out.println("Setting world: " + loc.getWorld().getName());
+		
+		plugin.getConfig().set("Position." + pos + "." + digit + ".Location", v);
+		plugin.getConfig().set("Position.World", loc.getWorld().getName());
+		
+		Config.save();
+		Config.reload();
 	}
 	
 	public static int sizeofDigit(int number) {
@@ -132,10 +169,10 @@ public class Config {
 		if (number < 0 || number > 9)
 			throw new IllegalArgumentException("From 0 to 9 permitted");
 		
-		return config.getInt("Blocks." + number + ".size");
+		return plugin.getConfig().getInt("Blocks." + number + ".Size");
 	}
 	
-	public static Vector[] blocks(int number) {
+	public static Location[] blocks(int number) {
 		
 		if (number < 0 || number > 9)
 			throw new IllegalArgumentException("From 0 to 9 permitted");
@@ -145,7 +182,7 @@ public class Config {
 	
 	public static void loadblocks() {
 		
-		BLOCKS = new Vector[10][];
+		BLOCKS = new Location[10][];
 		
 		for (int number = 0; number < 10; number++) {
 		
@@ -157,113 +194,192 @@ public class Config {
 		
 		int size = sizeofDigit(digit);
 		
-		BLOCKS[digit] = new Vector[size];
+		BLOCKS[digit] = new Location[size];
 	
 		for (int i = 0; i < size; i++) {
 		
-			BLOCKS[digit][i] = config.getVector("Blocks." + digit + "." + i + ".Location");
+			BLOCKS[digit][i] = plugin.getConfig().getVector("Blocks." + digit + "." + i + ".Location").
+					toLocation(world());
 		}
 	}
 	
 	public static void setWorld(World w) {
 		
-		config.set("Position.World", w.getName());
-	}
-	
-	public static World world() {
-		
-		return Bukkit.getServer().getWorld(config.getString("Position.World"));
-	}
-	
-	public static void setBlock(Block block, int digit, int index) {	// !! reference of position hours first !!
-		
-		if (!config.contains("Blocks." + digit + "." + index)) {
-			
-			config.createSection("Blocks." + digit + "." + index);
-			config.createSection("Blocks." + digit + "." + index + ".Location");
-			config.set("Blocks." + digit + ".Size", sizeofDigit(digit) + 1);
-		}
-		
-		config.set("Blocks." + digit + "." + index + ".x", block.getLocation().toVector().subtract(position(POS_HOURS, POS_FIRST).toVector()));
-		
-		if (!config.contains("Blocks." + digit + "." + index + ".Material")) {
-			
-			config.createSection("Blocks." + digit + "." + index + ".Material");
-		}
-		
-		config.set("Blocks." + digit + "." + index + ".Material", block.getType());
+		plugin.getConfig().set("Position.World", w.getName());
 		
 		Config.save();
 		Config.reload();
 	}
 	
+	public static World world() {
+		
+		return Bukkit.getServer().getWorld(plugin.getConfig().getString("Position.World"));
+	}
+	
+	public static void setBlock(Block block, int digit, int index) {	// !! reference of position hours first !!
+		
+		if (!plugin.getConfig().contains("Blocks." + digit + "." + index)) {
+			
+			System.out.println("Creating section: " + "Blocks." + digit + "." + index);
+			System.out.println("Creating section: " + "Blocks." + digit + "." + index + ".Location");
+			System.out.println("Add new block to: " + digit + " " + index);
+			
+			plugin.getConfig().createSection("Blocks." + digit + "." + index);
+			plugin.getConfig().createSection("Blocks." + digit + "." + index + ".Location");
+			plugin.getConfig().set("Blocks." + digit + ".Size", sizeofDigit(digit) + 1);
+		}
+		
+		
+		Vector v = block.getLocation().subtract(position(POS_HOURS, POS_FIRST)).toVector();
+		
+		System.out.println("Setting block: " + v.getX() + " " + v.getY() + " " + v.getZ());
+		
+		plugin.getConfig().set("Blocks." + digit + "." + index + ".Location", v);
+		
+		if (!plugin.getConfig().contains("Blocks." + digit + "." + index + ".Material")) {
+			
+			System.out.println("Creating section: " + "Blocks." + digit + "." + index + ".Material");
+			plugin.getConfig().createSection("Blocks." + digit + "." + index + ".Material");
+		}
+		
+		System.out.println("Setting material: " + block.getType().toString());
+		
+		plugin.getConfig().set("Blocks." + digit + "." + index + ".Material", block.getType().toString());
+		
+		Config.loadblocks(digit);
+		Config.save();
+		Config.reload();
+	}
+	
+	public static void clearDigit(int digit) {
+		
+		BLOCKS[digit] = null;
+		
+		for (int i = 0; i < sizeofDigit(digit); i++) {
+			
+			plugin.getConfig().set("Block." + digit + "." + i, null);
+		}
+	}
+	
+	public static void setDigitByVolume(Block b1, Block b2, int digit) {
+		
+		Location oldpos = position(POS_HOURS, POS_FIRST);
+		
+		World wor = b1.getWorld();
+		setWorld(wor);
+		
+		clearDigit(digit);
+		
+		Location l1 = b1.getLocation();
+		Location l2 = b2.getLocation();
+		
+		setPosition(l1, POS_HOURS, POS_FIRST);
+		
+		int size = 0;
+		int[] inc = new int[3];
+		
+		inc[0] = (l2.getX() - l1.getX() < 0) ? -1 : 1;
+		inc[1] = (l2.getY() - l1.getY() < 0) ? -1 : 1;
+		inc[2] = (l2.getZ() - l1.getZ() < 0) ? -1 : 1;
+		
+		for (int i = (int)l1.getX() + inc[0]; i != (int)l2.getX(); i += inc[0]) {
+			
+			for (int j = (int)l1.getY() + inc[1]; j != (int)l2.getY(); j += inc[1]) {
+				
+				for (int w = (int)l1.getZ() + inc[2]; w != (int)l2.getZ(); w += inc[2]) {
+					
+					//System.out.println("V")
+					
+					Block bk = wor.getBlockAt(new Location(wor, i, j, w));
+					
+					if (bk.getType().toString().equals(Material.AIR.toString()) || bk.toString().equals(b1.toString()) || bk.toString().equals(b2.toString())) {
+						
+						continue;
+					}
+					
+					setBlock(bk, digit, size);
+					size++;
+				}
+			}
+		}
+		
+		setPosition(oldpos, POS_HOURS, POS_FIRST);
+		loadblocks(digit);
+	}
+	
+	public static Material material(int digit, int index) {
+		
+		return Material.getMaterial(plugin.getConfig().getString("Blocks." + digit + "." + index + ".Material"));
+	}
+	
 	private static void decreaseBlockIndex(int digit, int index) {
 		
-		if (config.contains("Blocks." + digit + "." + (index - 1)))
-			config.set("Blocks." + digit + "." + (index - 1), null);	// delete destination section
+		if (plugin.getConfig().contains("Blocks." + digit + "." + (index - 1)))
+			plugin.getConfig().set("Blocks." + digit + "." + (index - 1), null);	// delete destination section
 		
-		Vector coords = config.getVector("Blocks." + digit + "." + index + ".Location");
-		String mat = config.getString("Blocks." + digit + "." + index + ".Material");
+		Vector coords = plugin.getConfig().getVector("Blocks." + digit + "." + index + ".Location");
+		String mat = plugin.getConfig().getString("Blocks." + digit + "." + index + ".Material");
 		
-		config.set("Blocks." + digit + "." + index, null);
+		plugin.getConfig().set("Blocks." + digit + "." + index, null);
 		
-		config.createSection("Blocks." + digit + "." + (index - 1));
-		config.createSection("Blocks." + digit + "." + (index - 1) + ".Location");
-		config.createSection("Blocks." + digit + "." + (index - 1) + ".Material");
+		plugin.getConfig().createSection("Blocks." + digit + "." + (index - 1));
+		plugin.getConfig().createSection("Blocks." + digit + "." + (index - 1) + ".Location");
+		plugin.getConfig().createSection("Blocks." + digit + "." + (index - 1) + ".Material");
 		
-		config.set("Blocks." + digit + "." + (index - 1) + ".Location", coords);
-		config.set("Blocks." + digit + "." + (index - 1) + ".Material", mat);
+		plugin.getConfig().set("Blocks." + digit + "." + (index - 1) + ".Location", coords);
+		plugin.getConfig().set("Blocks." + digit + "." + (index - 1) + ".Material", mat);
 	}
 	
 	public static void removeBlock(int digit, int index) {
 		
-		if (!config.contains("Blocks." + digit + "." + index))
+		if (!plugin.getConfig().contains("Blocks." + digit + "." + index))
 			return;
 		
-		config.set("Blocks." + digit + "." + index, null);
+		plugin.getConfig().set("Blocks." + digit + "." + index, null);
 		
 		for (int i = index + 1; i < Config.sizeofDigit(digit); i++)
 			decreaseBlockIndex(digit, i);	// rename blocks
 		
-		config.set("Block." + digit + ".Size", sizeofDigit(digit) - 1);
+		plugin.getConfig().set("Block." + digit + ".Size", sizeofDigit(digit) - 1);
 		
+		Config.loadblocks(digit);
 		Config.save();
 		Config.reload();
 	}
 	
 	public static boolean active() {
 		
-		return config.getBoolean("Active");
+		return plugin.getConfig().getBoolean("Active");
 	}
 	
 	public static void setActive(boolean active) {
 		
-		config.set("Active", active);
+		plugin.getConfig().set("Active", active);
 	}
 	
 	public static String timeMessage() {
 		
-		return config.getString("Messages.Time");
+		return plugin.getConfig().getString("Messages.Time");
 	}
 	
 	public static String dateMessage() {
 		
-		return config.getString("Messages.Date");
+		return plugin.getConfig().getString("Messages.Date");
 	}
 	
 	public static String infoMessage() {
 		
-		return config.getString("Messages.ClockInfo");
+		return plugin.getConfig().getString("Messages.ClockInfo");
 	}
 	
 	public static String startMessage() {
 		
-		return config.getString("Messages.ClockStart");
+		return plugin.getConfig().getString("Messages.ClockStart");
 	}
 	
 	public static String stopMessage() {
 		
-		return config.getString("Messages.ClockStop");
+		return plugin.getConfig().getString("Messages.ClockStop");
 	}
 	
 	public static void save() {
